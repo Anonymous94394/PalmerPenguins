@@ -1,3 +1,6 @@
+#Function for cleaning the data 
+
+#Overall function 
 Cleaning <- function(raw_data){
   raw_data %>%
     clean_names()%>%

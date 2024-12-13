@@ -2,10 +2,10 @@
 title: "Palmer Penguin Analyses"
 output:
   html_document:
-    toc: true
-    toc_depth: 2          
-    toc_float: true       
-    code_folding: hide
+    toc: true # Add a table of contents (TOC)
+    toc_depth: 2 #  Limits the TOC to the first two levels of headings. 
+    toc_float: true # Makes the TOC float on the side as you scroll through the document.
+    code_folding: hide #Hide the code by default
 date: "2024-12-09"
 bibliography: references.bib
 ---
@@ -48,6 +48,8 @@ here()
 ### Call the required functions
 
 ```{r, include=TRUE}
+
+#See function files for function details 
 source(here("Functions/Cleaning.R"))
 source(here("Functions/AssumptionCheck.R"))
 source(here("Functions/SavingFigure.R"))
@@ -273,7 +275,6 @@ anova_table <- Anova(Culmen_model_2) %>% # Perform the ANOVA
     `P-Value` = formatC(`P-Value`, format = "e", digits = 3) # Format P-values in standard form (or will present as 0)
   )
 
-
 #Apply function to display the results table 
 create_styled_table(anova_table, c("Sum of Squares", "Degrees of Freedom", "F Value", "P-Value"), "Table 3: ANOVA Results") #Function details in function folder 
 
@@ -284,13 +285,14 @@ create_styled_table(anova_table, c("Sum of Squares", "Degrees of Freedom", "F Va
 
 ```{r, include=TRUE}
 
-#Perform a pwc and generate a table of results 
+#Perform the pwc 
 pwc <- penguins_clean_subset %>% # Specify the data set
   pairwise_t_test( # Specify the test
     culmen_depth_mm ~ species, paired = FALSE, # Specify the variables
     p.adjust.method = "bonferroni" # Apply the Bonferroni adjustment
-  ) 
+  ) #It is important to keep the pwc code and the results table code seperate as "pwc" will be called in the results figure. 
 
+# generate a table of results 
 pwc_table <- pwc %>%  select(group1, group2, p, p.adj) %>% # Select the information to present
   mutate(
     p = formatC(p, format = "e", digits = 3),       # Format p-values 
@@ -345,7 +347,9 @@ save_flipper_plot_svg(Results.figure,
 
 # [Conclusion]{.underline}
 
-> In conclusion, the null hypothesis of no difference between the three culmen depths can be rejected. While the Adelie and Chinstrap penguins exhibit similar culmen depths, the Gentoo penguins demonstrate a significantly different culmen depth, and these patterns inform us about their feeding niches. However, further analyses of other traits affecting the prey available are required to further understand their feeding niche. Even so, this is an interesting example of how morphological divergence is involved in niche specialization within genera, reducing competition and allowing co-existence. Different combinations of penguin species are found on Torgersen, Dream, and Biscoe Islands; however, all three species never coexist on the same island. It would be interesting to investigate whether the presence of different species on an island influences their unique ecological specializations.
+> In conclusion, the null hypothesis of no difference between the three culmen depths can be rejected. While the Adelie and Chinstrap penguins exhibit similar culmen depths, the Gentoo penguins demonstrate a significantly different culmen depth. This suggests that Adelie and Chinstrap penguins share more similar feeding niches than Gentoo penguins. However, further analysis into other traits affecting the prey available to each species is required to further understand their feeding niche. Even so, this is an interesting example of how morphological divergence is involved in niche specialisation within genera, reducing competition and allowing co-existence. Interestingly, different combinations of penguin species are found on Torgersen, Dream, and Biscoe Islands; however, all three species never coexist on the same island. A next step would be to investigate whether the presence of different species combinations on an island influences their unique ecological specialisations.
+
+
 
 # [References]{.underline}
 
@@ -368,26 +372,45 @@ renv::snapshot()
 
 ### a) GitHub
 
-*GitHub link:* <https://github.com/Anonymous94394/PalmerPenguins_1.git>
+*GitHub link:*. https://github.com/Anonymous94394/PalmerPenguins.git 
 
 ### b) Share your repo with a partner, download, and try to run their data pipeline.
 
-*Partner's GitHub link:*
-
-*You **must** provide this so I can verify there is no plagiarism between you and your partner.*
+*Partner's GitHub link:* https://github.com/bleeddmagic/PenguinsProject 
 
 ### c) Reflect on your experience running their code. (300-500 words)
 
 -   *What elements of your partner's code helped you to understand their data pipeline?*
 
+My partner’s code was laid out in a clear, chronological order, making the overall pipeline easy to follow. The main body of text clearly outlined their steps, and I could match this to the code. When they used comments to explain the code, they were informative and helped to clarify the purpose of code blocks. Having a step-by-step breakdown of the cleaning function in the text allowed me to understand the logic behind the code. It was also helpful that they used a relative file path instead of an absolute one, allowing me to run the code on my computer without needing to adjust file locations.
+
 -   *Did it run? Did you need to fix anything?*
+
+The code ran without anything requiring fixing. However, I removed the ‘Install, packages’ from the top so that if I re-ran the code, the packages did not try to install again.   
 
 -   *What suggestions would you make for improving their code to make it more understandable or reproducible, and why?*
 
+Along with using a relative path, I would suggest utilising the ‘here’ package to ensure that file paths are always resolved relative to the project root, making the code more robust and portable across different systems. I would also use the ‘renv’ function to create a lock file containing the required packages, which can then be run on any device to install the required packages. This will improve reproducibility as the same versions of the packages will be installed by everyone running the code. I would suggest saving the cleaning function in a separate R script and then loading it into the main script. This will simplify the script and make it more understandable. It may also be beneficial to create additional functions for repeated processes (e.g. saving figures). More explanatory comments within the code chunks will improve both understandability and reproducibility as individuals running the code will have a greater idea of what each line of code does. This will help them if they need to troubleshoot or update the code. Finally, the addition of a ReadMe file that provides clear instructions on how to set up and run the project will make it easier for others to understand, use, and replicate the analysis. 
+
 -   *If you needed to alter your partner's figure using their code, do you think that would be easy or difficult, and why?*
+
+It would be relatively easy. The first figure using GGplot is clear and the function of each line can be easily interpreted and thus edited. However, I would struggle to edit the graphs showing the intercepts without more explanatory comments as, unlike gg plot, I am not familiar with the functions used. The code for the intercept plots could also be simplified into fewer lines using the pipe function, making it more understandable and, therefore, editable. 
 
 ### d) Reflect on your own code based on your experience with your partner's code and their review of yours. (300-500 words)
 
 -   *What improvements did they suggest, and do you agree?*
 
+My partner stated that my code relied heavily on access to specific files in the repository. While I acknowledge this reliance, I believe it is not inherently a drawback. By utilising functions and the renv.lock file, I have ensured that the code remains organized, modular, and functional within its intended environment. However, I fully agree that this reliance could result in challenges for others if the setup process is not clearly communicated. 
+
+To address this, my partner recommended adding a README file to explain the setup process and the dependencies required. I agree that this would improve the accessibility of my code, for anyone attempting to replicate or build upon my work. In response to their feedback, I created a README file outlining the project structure, setup instructions, required libraries, and steps to access and utilize the repository files. This addition has already enhanced the usability of my code and is a step I will prioritize in future projects.
+
+
 -   *What did you learn about writing code for other people?* ::::
+
+
+A recurring theme was the importance of clear communication and thorough documentation. While certain steps, lines of code, or functions may seem intuitive to the original author, they might be confusing to someone unfamiliar with the data or the specific functions used.  Detailed explanations of each command both enhance readability and ensure the analysis can be replicated. 
+
+This experience also made me appreciate the value of collaboration. Having someone else run my code on another laptop was invaluable for uncovering blind spots and ensuring my environment was set up correctly. Reviewing someone else’s code exposed me to alternative strategies and made me appreciate how much harder it is to follow code that someone else has written.
+
+In the past, I have coded purely to generate an appropriate output, with little effort to make the code understandable to anyone else. This exercise has highlighted the importance of making both the input and the output clear and well-explained to ensure that others can re-use my code and replicate my work. 
+

@@ -1,3 +1,5 @@
+#Function for summarizing the data (meand and sd) and viewing it in table 
+
 summarize_data <- function(data, group_var, Measurement, caption) {
   #First generate variables  
   summary_stats <- data %>%  

@@ -1,3 +1,4 @@
+#Function for saving the figures as svg's 
 
 save_flipper_plot_svg <- function(boxplot, filename, size, scaling) {
   size_inches = size / 2.54  #Convert size from millimeters to inches (since svg dimensions in svglite are in inches)

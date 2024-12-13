@@ -1,3 +1,5 @@
+#Function to format outputs into a well structured table 
+
 create_styled_table <- function(results_table, col_names, caption) {
   kable(
     results_table,
